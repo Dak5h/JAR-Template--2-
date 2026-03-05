@@ -104,7 +104,7 @@ PORT17,
 2.00
 );
 
-int current_auton_selection = 0;
+int current_auton_selection = 2;
 bool auto_started = false;
 
 void toggleDescoreP(){
@@ -144,11 +144,14 @@ void pre_auton() {
       case 1:
         Brain.Screen.printAt(5, 140, "solo_awp_counter");
         break;
+      case 2:
+        Brain.Screen.printAt(5, 140, "left_mid_elims");
+        break;
     }
     if(Brain.Screen.pressing()){
       while(Brain.Screen.pressing()) {}
       current_auton_selection ++;
-    } else if (current_auton_selection == 2){
+    } else if (current_auton_selection == 3){
       current_auton_selection = 0;
     }
     task::sleep(10);
@@ -164,13 +167,17 @@ void pre_auton() {
 
 void autonomous(void) {
   auto_started = true;
-  switch(current_auton_selection){ 
+  switch(current_auton_selection) { 
     case 0:
       prog_skills();
       break;
 
     case 1:
       solo_awp_counter();
+      break;
+
+    case 2:
+      left_mid_elims();
       break;
  }
 }

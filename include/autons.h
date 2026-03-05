@@ -9,3 +9,4 @@ void default_constants();
 
 void prog_skills();
 void solo_awp_counter();
+void left_mid_elims();
