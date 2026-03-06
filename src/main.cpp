@@ -104,7 +104,7 @@ PORT17,
 2.00
 );
 
-int current_auton_selection = 2;
+int current_auton_selection = 4;
 bool auto_started = false;
 
 void toggleDescoreP(){
@@ -147,11 +147,19 @@ void pre_auton() {
       case 2:
         Brain.Screen.printAt(5, 140, "left_mid_elims");
         break;
+      
+      case 3:
+        Brain.Screen.printAt(5, 140, "left_4ball_elims");
+        break;
+
+      case 4:
+        Brain.Screen.printAt(5, 140, "right_4ball_elims");
+        break;
     }
     if(Brain.Screen.pressing()){
       while(Brain.Screen.pressing()) {}
       current_auton_selection ++;
-    } else if (current_auton_selection == 3){
+    } else if (current_auton_selection == 5){
       current_auton_selection = 0;
     }
     task::sleep(10);
@@ -178,6 +186,14 @@ void autonomous(void) {
 
     case 2:
       left_mid_elims();
+      break;
+
+    case 3:
+      left_4ball_elims();
+      break;
+
+    case 4:
+      right_4ball_elims();
       break;
  }
 }
@@ -225,6 +241,10 @@ void usercontrol(void) {
       bottomTriStateP.set(false);
       topTriStateP.set(true);
       intakeMotors.spin(forward, 100, vex::velocityUnits::pct);
+    } else if(Controller1.ButtonB.pressing()) {
+      bottomTriStateP.set(false);
+      topTriStateP.set(true);
+      intakeMotors.spin(forward, 35, vex::velocityUnits::pct);
     } else {
       bottomTriStateP.set(false);
       topTriStateP.set(false);
