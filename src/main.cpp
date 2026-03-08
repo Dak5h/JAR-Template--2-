@@ -104,7 +104,7 @@ PORT17,
 2.00
 );
 
-int current_auton_selection = 4;
+int current_auton_selection = 2;
 bool auto_started = false;
 
 void toggleDescoreP(){
@@ -118,10 +118,9 @@ void toggleMatchLoadP(){
 
 
 /**
- * Function before autonomous. It prints the current auton number on the screen
- * and tapping the screen cycles the selected auton by 1. Add anything else you
- * may need, like resetting pneumatic components. You can rename these autons to
- * be more descriptive, if you like.
+ * Function before autonomous. It prints the current auton on the brain screen.
+ * Use the controller D-pad to select: Right = next auton, Left = previous auton.
+ * Add anything else you may need, like resetting pneumatic components.
  */
 
 void pre_auton() {
@@ -136,31 +135,48 @@ void pre_auton() {
     Brain.Screen.printAt(5, 60, "%d", Brain.Battery.capacity());
     Brain.Screen.printAt(5, 80, "Chassis Heading Reading:");
     Brain.Screen.printAt(5, 100, "%f", chassis.get_absolute_heading());
-    Brain.Screen.printAt(5, 120, "Selected Auton:");
+    Brain.Screen.printAt(5, 120, "Selected Auton (D-pad L/R):");
+    const char* auton_name = "";
     switch(current_auton_selection){
       case 0:
-        Brain.Screen.printAt(5, 140, "prog_skills");
+        auton_name = "prog_skills";
         break;
       case 1:
-        Brain.Screen.printAt(5, 140, "solo_awp_counter");
+        auton_name = "solo_awp_counter";
         break;
       case 2:
-        Brain.Screen.printAt(5, 140, "left_mid_elims");
+        auton_name = "left_mid_elims";
         break;
-      
       case 3:
-        Brain.Screen.printAt(5, 140, "left_4ball_elims");
+        auton_name = "left_4ball_elims";
         break;
-
       case 4:
-        Brain.Screen.printAt(5, 140, "right_4ball_elims");
+        auton_name = "right_4ball_elims";
+        break;
+      case 5:
+        auton_name = "left_7ball_elims";
         break;
     }
-    if(Brain.Screen.pressing()){
-      while(Brain.Screen.pressing()) {}
-      current_auton_selection ++;
-    } else if (current_auton_selection == 5){
-      current_auton_selection = 0;
+    Brain.Screen.printAt(5, 140, false, "%s", auton_name);
+
+    // Controller: selected auton + live inertial
+    Controller1.Screen.clearScreen();
+    Controller1.Screen.setCursor(1, 1);
+    Controller1.Screen.print("Auton: %s", auton_name);
+    Controller1.Screen.setCursor(2, 1);
+    Controller1.Screen.print("Head: %.1f", chassis.get_absolute_heading());
+    Controller1.Screen.setCursor(3, 1);
+    Controller1.Screen.print("P: %.1f R: %.1f", (float)chassis.Gyro.pitch(deg), (float)chassis.Gyro.roll(deg));
+
+    // Controller D-pad: Right = next auton, Left = previous auton
+    if (Controller1.ButtonRight.pressing()) {
+      while (Controller1.ButtonRight.pressing()) { task::sleep(10); }
+      current_auton_selection++;
+      if (current_auton_selection > 5) current_auton_selection = 0;
+    } else if (Controller1.ButtonLeft.pressing()) {
+      while (Controller1.ButtonLeft.pressing()) { task::sleep(10); }
+      current_auton_selection--;
+      if (current_auton_selection < 0) current_auton_selection = 5;
     }
     task::sleep(10);
   }
@@ -195,6 +211,10 @@ void autonomous(void) {
     case 4:
       right_4ball_elims();
       break;
+
+    case 5:
+      left_7ball_elims();
+      break;
  }
 }
 
@@ -209,6 +229,10 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 void usercontrol(void) {
+  // B toggles pistons to (bottom=false, top=true). Persists until L1/L2/R1 is pressed.
+  static bool bPistonsToggled = false;
+  bool lastBPressed = false;
+
   // User control code here, inside the loop
   while (1) {
     // This is the main execution loop for the user control program.
@@ -224,27 +248,42 @@ void usercontrol(void) {
     //or chassis.control_holonomic(); for holo drive.
     chassis.control_arcade();
 
-    // Intake control
+    // B toggle: press once to set pistons, persists until L1/L2/R1 overrides
+    bool bPressed = Controller1.ButtonB.pressing();
+    if (bPressed && !lastBPressed) {
+      bPistonsToggled = !bPistonsToggled;
+    }
+    lastBPressed = bPressed;
+
+    // Intake control - L1/L2 or B toggle false = normal intake
     if(Controller1.ButtonL1.pressing()) {
+      bPistonsToggled = false;
       bottomTriStateP.set(false);
       topTriStateP.set(false);
       intakeMotors.spin(forward, 100, vex::velocityUnits::pct);
     } else if(Controller1.ButtonL2.pressing()) {
+      bPistonsToggled = false;
       bottomTriStateP.set(false);
       topTriStateP.set(false);
       intakeMotors.spin(reverse, 100, vex::velocityUnits::pct);
     } else if(Controller1.ButtonR1.pressing()){
-      bottomTriStateP.set(true);
-      topTriStateP.set(false);
-      intakeMotors.spin(forward, 100, vex::velocityUnits::pct);
+      if (bPistonsToggled) {
+        bottomTriStateP.set(false);
+        topTriStateP.set(true);
+        intakeMotors.spin(forward, 40, vex::velocityUnits::pct);
+      } else {
+        bottomTriStateP.set(true);
+        topTriStateP.set(false);
+        intakeMotors.spin(forward, 100, vex::velocityUnits::pct);
+      }
     } else if(Controller1.ButtonR2.pressing()) {
       bottomTriStateP.set(false);
       topTriStateP.set(true);
       intakeMotors.spin(forward, 100, vex::velocityUnits::pct);
-    } else if(Controller1.ButtonB.pressing()) {
+    } else if(bPistonsToggled) {
       bottomTriStateP.set(false);
       topTriStateP.set(true);
-      intakeMotors.spin(forward, 35, vex::velocityUnits::pct);
+      intakeMotors.stop();
     } else {
       bottomTriStateP.set(false);
       topTriStateP.set(false);
