@@ -12,9 +12,9 @@ extern motor RightMiddle;
 extern motor RightBack;
 
 // Mech Motors
-extern motor LeftIntakeMotor;
-extern motor RightIntakeMotor;
-extern motor_group intakeMotors;
+extern motor BottomFullIntake;
+extern motor BottomHalfIntake;
+extern motor_group BottomIntake;
 
 // Sensors
 extern optical Blockhold;
@@ -26,9 +26,9 @@ extern optical highBlock;
 extern optical parkZone;
 
 // Pneumatics
+extern pneumatics angleChangeP;
+extern pneumatics ballLockP;
+extern pneumatics wingP;
+extern pneumatics intakeLiftP;
 extern pneumatics matchLoadP;
-extern pneumatics descoreP;
-extern pneumatics midDescoreP;
-extern pneumatics bottomTriStateP;
-extern pneumatics topTriStateP;
 void  vexcodeInit( void );

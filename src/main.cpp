@@ -50,15 +50,15 @@ motor_group(LeftFront, LeftMiddle, LeftBack),
 motor_group(RightFront, RightMiddle, RightBack),
 
 //Specify the PORT NUMBER of your inertial sensor, in PORT format (i.e. "PORT1", not simply "1"):
-PORT16,
+PORT21,
 
 //Input your wheel diameter. (4" omnis are actually closer to 4.125"):
-4,
+3.25,
 
 //External ratio, must be in decimal, in the format of input teeth/output teeth.
 //If your motor has an 84-tooth gear and your wheel has a 60-tooth gear, this value will be 1.4.
 //If the motor drives the wheel directly, this value will be 1:
-0.429,
+0.75,
 
 //Gyro scale, this is what your gyro reads when you spin the robot 360 degrees.
 //For most cases 360 will do fine here, but this scale factor can be very helpful when precision is necessary.
@@ -84,7 +84,7 @@ PORT3,     -PORT4,
 //If you are using position tracking, this is the Forward Tracker port (the tracker which runs parallel to the direction of the chassis).
 //If this is a rotation sensor, enter it in "PORT1" format, inputting the port below.
 //If this is an encoder, enter the port as an integer. Triport A will be a "1", Triport B will be a "2", etc.
-PORT15,
+PORT3,
 
 //Input the Forward Tracker diameter (reverse it to make the direction switch):
 -2.2675,
@@ -92,7 +92,7 @@ PORT15,
 //Input Forward Tracker center distance (a positive distance corresponds to a tracker on the right side of the robot, negative is left.)
 //For a zero tracker tank drive with odom, put the positive distance from the center of the robot to the right side of the drive.
 //This distance is in inches:
-0.25,
+0,
 
 //Input the Sideways Tracker Port, following the same steps as the Forward Tracker Port:
 PORT17,
@@ -104,17 +104,16 @@ PORT17,
 2.00
 );
 
-int current_auton_selection = 2;
-bool auto_started = false;
-
-void toggleDescoreP(){
-  descoreP.set(!descoreP.value());
+void toggleWingP(){
+  wingP.set(!wingP.value());
 }
 
-void toggleMatchLoadP(){
+void togglematchLoadP(){
   matchLoadP.set(!matchLoadP.value());
 }
 
+int current_auton_selection = 1;
+bool auto_started = false;
 
 
 /**
@@ -139,46 +138,13 @@ void pre_auton() {
     const char* auton_name = "";
     switch(current_auton_selection){
       case 0:
-        auton_name = "prog_skills";
+        auton_name = "elims_right_low_split";
         break;
+
       case 1:
-        auton_name = "solo_awp_counter";
-        break;
-      case 2:
-        auton_name = "left_mid_elims";
-        break;
-      case 3:
-        auton_name = "left_4ball_elims";
-        break;
-      case 4:
-        auton_name = "right_4ball_elims";
-        break;
-      case 5:
-        auton_name = "left_7ball_elims";
+        auton_name = "elims_right_7ball";
         break;
     }
-    Brain.Screen.printAt(5, 140, false, "%s", auton_name);
-
-    // Controller: selected auton + live inertial
-    Controller1.Screen.clearScreen();
-    Controller1.Screen.setCursor(1, 1);
-    Controller1.Screen.print("Auton: %s", auton_name);
-    Controller1.Screen.setCursor(2, 1);
-    Controller1.Screen.print("Head: %.1f", chassis.get_absolute_heading());
-    Controller1.Screen.setCursor(3, 1);
-    Controller1.Screen.print("P: %.1f R: %.1f", (float)chassis.Gyro.pitch(deg), (float)chassis.Gyro.roll(deg));
-
-    // Controller D-pad: Right = next auton, Left = previous auton
-    if (Controller1.ButtonRight.pressing()) {
-      while (Controller1.ButtonRight.pressing()) { task::sleep(10); }
-      current_auton_selection++;
-      if (current_auton_selection > 5) current_auton_selection = 0;
-    } else if (Controller1.ButtonLeft.pressing()) {
-      while (Controller1.ButtonLeft.pressing()) { task::sleep(10); }
-      current_auton_selection--;
-      if (current_auton_selection < 0) current_auton_selection = 5;
-    }
-    task::sleep(10);
   }
 }
 
@@ -193,27 +159,11 @@ void autonomous(void) {
   auto_started = true;
   switch(current_auton_selection) { 
     case 0:
-      prog_skills();
+      elims_right_low_split();
       break;
-
+      
     case 1:
-      solo_awp_counter();
-      break;
-
-    case 2:
-      left_mid_elims();
-      break;
-
-    case 3:
-      left_4ball_elims();
-      break;
-
-    case 4:
-      right_4ball_elims();
-      break;
-
-    case 5:
-      left_7ball_elims();
+      elims_right_7ball();
       break;
  }
 }
@@ -229,9 +179,6 @@ void autonomous(void) {
 /*---------------------------------------------------------------------------*/
 
 void usercontrol(void) {
-  // B toggles pistons to (bottom=false, top=true). Persists until L1/L2/R1 is pressed.
-  static bool bPistonsToggled = false;
-  bool lastBPressed = false;
 
   // User control code here, inside the loop
   while (1) {
@@ -248,52 +195,40 @@ void usercontrol(void) {
     //or chassis.control_holonomic(); for holo drive.
     chassis.control_arcade();
 
-    // B toggle: press once to set pistons, persists until L1/L2/R1 overrides
-    bool bPressed = Controller1.ButtonB.pressing();
-    if (bPressed && !lastBPressed) {
-      bPistonsToggled = !bPistonsToggled;
-    }
-    lastBPressed = bPressed;
-
-    // Intake control - L1/L2 or B toggle false = normal intake
     if(Controller1.ButtonL1.pressing()) {
-      bPistonsToggled = false;
-      bottomTriStateP.set(false);
-      topTriStateP.set(false);
-      intakeMotors.spin(forward, 100, vex::velocityUnits::pct);
+      angleChangeP.set(false);
+      ballLockP.set(false);
+      intakeLiftP.set(false);
+      BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
     } else if(Controller1.ButtonL2.pressing()) {
-      bPistonsToggled = false;
-      bottomTriStateP.set(false);
-      topTriStateP.set(false);
-      intakeMotors.spin(reverse, 100, vex::velocityUnits::pct);
-    } else if(Controller1.ButtonR1.pressing()){
-      if (bPistonsToggled) {
-        bottomTriStateP.set(false);
-        topTriStateP.set(true);
-        intakeMotors.spin(forward, 40, vex::velocityUnits::pct);
-      } else {
-        bottomTriStateP.set(true);
-        topTriStateP.set(false);
-        intakeMotors.spin(forward, 100, vex::velocityUnits::pct);
-      }
+      angleChangeP.set(false);
+      ballLockP.set(false);
+      BottomIntake.spin(reverse, 100, vex::velocityUnits::pct);
+    } else if(Controller1.ButtonR1.pressing()) {
+      angleChangeP.set(false);
+      ballLockP.set(true);
+      intakeLiftP.set(false);
+      BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
     } else if(Controller1.ButtonR2.pressing()) {
-      bottomTriStateP.set(false);
-      topTriStateP.set(true);
-      intakeMotors.spin(forward, 100, vex::velocityUnits::pct);
-    } else if(bPistonsToggled) {
-      bottomTriStateP.set(false);
-      topTriStateP.set(true);
-      intakeMotors.stop();
+      angleChangeP.set(true);
+      ballLockP.set(false);
+      intakeLiftP.set(false);
+      BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
     } else {
-      bottomTriStateP.set(false);
-      topTriStateP.set(false);
-      intakeMotors.stop();
+      angleChangeP.set(false);
+      ballLockP.set(false);
+      intakeLiftP.set(false);
+      BottomIntake.stop();
     }
 
-    // Angle change control
-    Controller1.ButtonX.pressed(toggleDescoreP);
-    Controller1.ButtonA.pressed(toggleMatchLoadP);
-
+    if(Controller1.ButtonY.pressing()) {
+      intakeLiftP.set(true);
+    } else {
+      intakeLiftP.set(false);
+    }
+    
+    Controller1.ButtonX.pressed(toggleWingP);
+    Controller1.ButtonA.pressed(togglematchLoadP);
 
     wait(10, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
