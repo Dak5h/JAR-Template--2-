@@ -31,4 +31,5 @@ extern pneumatics ballLockP;
 extern pneumatics wingP;
 extern pneumatics intakeLiftP;
 extern pneumatics matchLoadP;
+extern pneumatics midDescoreP;
 void  vexcodeInit( void );

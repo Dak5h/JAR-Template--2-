@@ -32,7 +32,7 @@ pneumatics ballLockP = pneumatics(Brain.ThreeWirePort.A);
 pneumatics wingP = pneumatics(Brain.ThreeWirePort.C);
 pneumatics intakeLiftP = pneumatics(Brain.ThreeWirePort.D);
 pneumatics matchLoadP = pneumatics(Brain.ThreeWirePort.E);
-
+pneumatics midDescoreP = pneumatics(Brain.ThreeWirePort.F);
 void vexcodeInit( void ) {
   // nothing to initialize
 }

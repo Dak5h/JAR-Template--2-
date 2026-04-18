@@ -112,14 +112,17 @@ void togglematchLoadP(){
   matchLoadP.set(!matchLoadP.value());
 }
 
-int current_auton_selection = 1;
+void togglemidDescoreP(){
+  midDescoreP.set(!midDescoreP.value());
+}
+int current_auton_selection = 2;
 bool auto_started = false;
 
-
 /**
- * Function before autonomous. It prints the current auton on the brain screen.
- * Use the controller D-pad to select: Right = next auton, Left = previous auton.
- * Add anything else you may need, like resetting pneumatic components.
+ * Function before autonomous. It prints the current auton number on the screen
+ * and tapping the screen cycles the selected auton by 1. Add anything else you
+ * may need, like resetting pneumatic components. You can rename these autons to
+ * be more descriptive, if you like.
  */
 
 void pre_auton() {
@@ -134,17 +137,26 @@ void pre_auton() {
     Brain.Screen.printAt(5, 60, "%d", Brain.Battery.capacity());
     Brain.Screen.printAt(5, 80, "Chassis Heading Reading:");
     Brain.Screen.printAt(5, 100, "%f", chassis.get_absolute_heading());
-    Brain.Screen.printAt(5, 120, "Selected Auton (D-pad L/R):");
-    const char* auton_name = "";
+    Brain.Screen.printAt(5, 120, "Selected Auton:");
     switch(current_auton_selection){
       case 0:
-        auton_name = "elims_right_low_split";
+        Brain.Screen.printAt(5, 140, "elims_right_low_split");
+        break;
+      case 1:
+        Brain.Screen.printAt(5, 140, "elims_right_7ball");
+        break;
+      case 2:
+        Brain.Screen.printAt(5, 140, "quals_counter_soloawp");
         break;
 
-      case 1:
-        auton_name = "elims_right_7ball";
-        break;
     }
+    if(Brain.Screen.pressing()){
+      while(Brain.Screen.pressing()) {}
+      current_auton_selection ++;
+    } else if (current_auton_selection == 3){
+      current_auton_selection = 0;
+    }
+    task::sleep(10);
   }
 }
 
@@ -165,6 +177,9 @@ void autonomous(void) {
     case 1:
       elims_right_7ball();
       break;
+
+    case 2:
+      quals_counter_soloawp();
  }
 }
 
@@ -229,6 +244,7 @@ void usercontrol(void) {
     
     Controller1.ButtonX.pressed(toggleWingP);
     Controller1.ButtonA.pressed(togglematchLoadP);
+    Controller1.ButtonUp.pressed(togglemidDescoreP);
 
     wait(10, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.
