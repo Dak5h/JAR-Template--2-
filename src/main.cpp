@@ -115,7 +115,7 @@ void togglematchLoadP(){
 void togglemidDescoreP(){
   midDescoreP.set(!midDescoreP.value());
 }
-int current_auton_selection = 2;
+int current_auton_selection = 5;
 bool auto_started = false;
 
 /**
@@ -148,12 +148,26 @@ void pre_auton() {
       case 2:
         Brain.Screen.printAt(5, 140, "quals_counter_soloawp");
         break;
+      case 3:
+        Brain.Screen.printAt(5, 140, "quals_regular_soloawp");
+        break;
+      case 4:
+        Brain.Screen.printAt(5, 140, "elims_left_7ball");
+        break;
+      case 5:
+        Brain.Screen.printAt(5, 140, "prog_skills");
+        break;
+
+      case 6:
+        Brain.Screen.printAt(5, 140, "elims_left_4ball");
+        break;
+
 
     }
     if(Brain.Screen.pressing()){
       while(Brain.Screen.pressing()) {}
       current_auton_selection ++;
-    } else if (current_auton_selection == 3){
+    } else if (current_auton_selection == 7){
       current_auton_selection = 0;
     }
     task::sleep(10);
@@ -180,6 +194,22 @@ void autonomous(void) {
 
     case 2:
       quals_counter_soloawp();
+      break;
+    
+    case 3:
+      quals_regular_soloawp();
+      break;
+
+    case 4:
+      elims_left_7ball();
+      break;
+    
+    case 5:
+      prog_skills();
+      break;
+    
+    case 6:
+      elims_left_4ball();
  }
 }
 
@@ -216,9 +246,17 @@ void usercontrol(void) {
       intakeLiftP.set(false);
       BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
     } else if(Controller1.ButtonL2.pressing()) {
-      angleChangeP.set(false);
-      ballLockP.set(false);
-      BottomIntake.spin(reverse, 100, vex::velocityUnits::pct);
+      if(current_auton_selection == 5) {
+        angleChangeP.set(false);
+        ballLockP.set(false);
+        intakeLiftP.set(true);
+        BottomIntake.spin(reverse, 30, vex::velocityUnits::pct);
+      }
+      else {
+        angleChangeP.set(false);
+        ballLockP.set(false);
+        BottomIntake.spin(reverse, 100, vex::velocityUnits::pct);
+      }
     } else if(Controller1.ButtonR1.pressing()) {
       angleChangeP.set(false);
       ballLockP.set(true);
@@ -228,7 +266,11 @@ void usercontrol(void) {
       angleChangeP.set(true);
       ballLockP.set(false);
       intakeLiftP.set(false);
-      BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
+      if(current_auton_selection == 5) {
+        BottomIntake.spin(forward, 20, vex::velocityUnits::pct);
+      } else {
+        BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
+      }
     } else {
       angleChangeP.set(false);
       ballLockP.set(false);
@@ -236,10 +278,12 @@ void usercontrol(void) {
       BottomIntake.stop();
     }
 
-    if(Controller1.ButtonY.pressing()) {
-      intakeLiftP.set(true);
-    } else {
-      intakeLiftP.set(false);
+    if (current_auton_selection != 5) {
+      if(Controller1.ButtonY.pressing()) {
+        intakeLiftP.set(true);
+      } else {
+        intakeLiftP.set(false);
+      }
     }
     
     Controller1.ButtonX.pressed(toggleWingP);

@@ -16,3 +16,6 @@ void elims_left_7ball();
 void elims_left_4ball();
 
 void quals_counter_soloawp();
+void quals_regular_soloawp();
+
+void prog_skills();

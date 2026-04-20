@@ -42,78 +42,65 @@ void odom_constants(){
 
 void elims_right_low_split() {
   odom_constants();
-  chassis.set_coordinates(86, 23, 0);
+  chassis.set_coordinates(85.25, 20.5, 90);
 
-  // Intake center stack
-  BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
-  chassis.drive_timeout = 1000;
-  chassis.boomerang_lead = 0.4;
-  chassis.drive_to_pose(96, 48, 55);
-
-  // Intake under long goal
-  chassis.drive_max_voltage = 6;
-  chassis.boomerang_lead = 0.3;
-  chassis.drive_to_pose(117, 58.5, 85);
+  // Intake from right match loader
   matchLoadP.set(true);
+  BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
+  chassis.drive_timeout = 920;
+  chassis.drive_to_point(120, 20);
   chassis.turn_timeout = 450;
-  chassis.turn_to_angle(0);
+  chassis.turn_to_angle(180);
+  chassis.drive_min_voltage = 3.5;
+  chassis.drive_max_voltage = 3.5;
+  chassis.drive_timeout = 800;
+  chassis.boomerang_lead = 0.2;
+  chassis.drive_to_pose(120, 0, 180);
   odom_constants();
 
-  // Reset Pose
-  chassis.set_coordinates(DistanceBack.objectDistance(inches) + 5, 144 - DistanceRight.objectDistance(inches) - 5.5, 0);
-
-  // Score blocks into long goal
-  chassis.drive_timeout = 670;
-  chassis.drive_to_pose(117, 54, -5);
-  matchLoadP.set(false);
-  chassis.swing_timeout = 1000;
-  chassis.left_swing_to_angle(180);
+  // Score into right long goal
+  chassis.drive_timeout = 700;
+  chassis.drive_to_point(122, 50);
   ballLockP.set(true);
   BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
-  matchLoadP.set(true);
-  chassis.drive_timeout = 450;
-  chassis.drive_max_voltage = 12;
+  chassis.drive_timeout = 400;
   chassis.drive_distance(-20, 180);
   chassis.turn_timeout = 700;
   chassis.turn_to_angle(180);
   ballLockP.set(false);
-  wait(50, msec);
+  matchLoadP.set(false);
   odom_constants();
 
   // Reset Pose
   chassis.set_coordinates(144 - DistanceLeft.objectDistance(inches) - 5.5, 42.75, 180);
 
-  // Intake from match loader
-  chassis.drive_min_voltage = 3.5;
-  chassis.drive_to_pose(120, 10, 180);
-  chassis.drive_max_voltage = 3.5;
-  chassis.drive_timeout = 120;
-  chassis.drive_to_pose(120, 0, 180);
-  odom_constants();
-  chassis.drive_distance(-12, 180);
-
-  // Score into low goal
+  // Descore
+  chassis.drive_timeout = 900;
+  chassis.drive_to_point(111.5, 36);
+  chassis.turn_timeout = 450;
+  chassis.turn_to_angle(193);
+  chassis.drive_distance(-24.5);
   chassis.turn_timeout = 500;
-  chassis.turn_to_angle(-45);
+  chassis.turn_to_angle(180);
+  odom_constants();
+  wait(3000, msec);
+  wingP.set(true);
+  wait(150, msec);
+  BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
+
+  // Intake center stack
+  chassis.turn_timeout = 500;
+  chassis.turn_to_angle(-140);
+  chassis.drive_to_point(96, 46);
+
+  // Score low goal
   BottomIntake.stop();
-  matchLoadP.set(false);
-  chassis.drive_timeout = 1400;
-  chassis.drive_to_pose(79.5, 64, -45);
+  chassis.turn_to_angle(-45);
+  chassis.drive_distance(14);
   intakeLiftP.set(true);
   BottomIntake.spin(reverse, 100, vex::velocityUnits::pct);
-  wait(1200, msec);
-  BottomIntake.stop();
+  wait(500, msec);
   intakeLiftP.set(false);
-  odom_constants();
-
-  // Decore long goal
-  chassis.drive_to_point(104.75, 43);
-  chassis.turn_timeout = 450;
-  chassis.turn_to_angle(200);
-  chassis.drive_min_voltage = 4;
-  chassis.drive_distance(-20.5);
-  chassis.turn_timeout = 500;
-  chassis.turn_to_angle(170);
 }
 
 void elims_right_7ball() {
@@ -137,7 +124,7 @@ void elims_right_7ball() {
   chassis.set_coordinates(144 - DistanceLeft.objectDistance(inches) - 5.5, 20, 180);
   chassis.drive_min_voltage = 4.5;
   chassis.drive_max_voltage = 4.5;
-  chassis.drive_timeout = 900;
+  chassis.drive_timeout = 870;
   chassis.boomerang_lead = 0.2;
   chassis.drive_to_pose(120, 0, 180);
   odom_constants();
@@ -149,7 +136,7 @@ void elims_right_7ball() {
   BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
   chassis.drive_timeout = 500;
   chassis.drive_distance(-20, 180);
-  chassis.turn_timeout = 850;
+  chassis.turn_timeout = 800;
   chassis.turn_to_angle(180);
   ballLockP.set(false);
   matchLoadP.set(false);
@@ -166,7 +153,7 @@ void elims_right_7ball() {
   chassis.turn_to_angle(193);
   chassis.drive_distance(-24.5);
   chassis.turn_timeout = 500;
-  chassis.turn_to_angle(170);
+  chassis.turn_to_angle(180);
 }
 
 void quals_counter_soloawp() {
@@ -240,7 +227,7 @@ void quals_counter_soloawp() {
 
   // Intake from match loader
   chassis.drive_min_voltage = 3.5;
-  chassis.drive_to_pose(24, 10, 180);
+  chassis.drive_to_pose(24, 11, 180);
   chassis.drive_max_voltage = 3.5;
   chassis.drive_timeout = 120;
   chassis.drive_to_pose(24, 0, 180);
@@ -264,4 +251,479 @@ void quals_counter_soloawp() {
   BottomIntake.stop();
   angleChangeP.set(false);
   odom_constants();
+}
+
+void quals_regular_soloawp() {
+  odom_constants();
+  chassis.set_coordinates(85.25, 20.5, 90);
+
+  // Intake from right match loader
+  matchLoadP.set(true);
+  BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
+  chassis.drive_timeout = 920;
+  chassis.drive_to_point(120, 20);
+  chassis.turn_timeout = 450;
+  chassis.turn_to_angle(180);
+  chassis.drive_min_voltage = 3.5;
+  chassis.drive_max_voltage = 3.5;
+  chassis.drive_timeout = 870;
+  chassis.boomerang_lead = 0.2;
+  chassis.drive_to_pose(120, 0, 180);
+  odom_constants();
+
+  // Score into right long goal
+  chassis.drive_timeout = 700;
+  chassis.drive_to_point(120, 50);
+  ballLockP.set(true);
+  BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
+  chassis.drive_timeout = 400;
+  chassis.drive_distance(-20, 180);
+  chassis.turn_timeout = 700;
+  chassis.turn_to_angle(180);
+  ballLockP.set(false);
+  matchLoadP.set(false);
+  odom_constants();
+
+  // Reset Pose
+  chassis.turn_timeout = 800;
+  chassis.turn_to_angle(270);
+  chassis.set_coordinates(144 - DistanceBack.objectDistance(inches) - 5, DistanceLeft.objectDistance(inches) + 5.5, -90);
+
+  // Intake right center stack
+  chassis.drive_timeout = 600;
+  chassis.drive_to_point(96, 47);
+  chassis.drive_timeout = 1600;
+  chassis.drive_to_point(43, 47);
+  chassis.turn_timeout = 450;
+  chassis.turn_to_angle(-140);
+  odom_constants();
+
+  // Score into mid goal
+  BottomIntake.stop();
+  matchLoadP.set(false);
+  chassis.drive_timeout = 675;
+  chassis.drive_to_point(62, 65);
+  angleChangeP.set(true);
+  BottomIntake.spin(forward, 40, vex::velocityUnits::pct);
+  chassis.drive_timeout = 650;
+  chassis.drive_min_voltage = 2;
+  chassis.drive_max_voltage = 2;
+  chassis.drive_distance(-20, -135);
+  BottomIntake.stop();
+  angleChangeP.set(false);
+  odom_constants();
+  chassis.set_coordinates(64, 64, -135);
+
+  // Reset Pose
+  matchLoadP.set(true);
+  chassis.drive_timeout = 1250;
+  chassis.drive_to_point(24, 20);
+  chassis.turn_timeout = 430;
+  chassis.turn_to_angle(180);
+  chassis.set_coordinates(DistanceRight.objectDistance(inches) + 5.5, 20, 180);
+
+  // Intake from match loader
+  BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
+  chassis.drive_min_voltage = 3.5;
+  chassis.boomerang_lead = 0.2;
+  chassis.drive_to_pose(23.5, 11, 180);
+  chassis.drive_max_voltage = 3.5;
+  chassis.drive_timeout = 50;
+  chassis.drive_to_pose(23.5, 0, 180);
+  odom_constants();
+
+  // Score into long goal
+  chassis.drive_timeout = 800;
+  chassis.drive_to_point(22.5, 50);
+  ballLockP.set(true);
+  matchLoadP.set(true);
+  BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
+  chassis.drive_timeout = 550;
+  chassis.drive_distance(-25, 180);
+  chassis.turn_timeout = 850;
+  chassis.turn_to_angle(180);
+  ballLockP.set(false);
+  matchLoadP.set(false);
+  odom_constants();
+
+  // Reset Pose
+  chassis.set_coordinates(DistanceRight.objectDistance(inches) + 5.5, 42.75, 180);
+
+  // Decore long goal
+  chassis.drive_to_point(13.75, 34);
+  chassis.turn_timeout = 450;
+  chassis.turn_to_angle(180);
+  chassis.drive_min_voltage = 4;
+  chassis.drive_distance(-23);
+  chassis.turn_timeout = 500;
+  chassis.turn_to_angle(170);
+}
+
+void elims_left_7ball() {
+  odom_constants();
+  chassis.set_coordinates(58, 23, 0);
+
+  // Intake center stack
+  BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
+  chassis.drive_timeout = 1000;
+  chassis.boomerang_lead = 0.4;
+  chassis.drive_to_pose(48, 48, -55);
+
+  // Intake from match loader
+  chassis.turn_timeout = 470;
+  chassis.turn_to_angle(-135);
+  matchLoadP.set(true);
+  chassis.drive_timeout = 1150;
+  chassis.drive_to_point(18, 15);
+  chassis.turn_timeout = 440;
+  chassis.turn_to_angle(180);
+  chassis.set_coordinates(DistanceRight.objectDistance(inches) + 5.5, 20, 180);
+  chassis.drive_min_voltage = 4.5;
+  chassis.drive_max_voltage = 4.5;
+  chassis.drive_timeout = 950;
+  chassis.boomerang_lead = 0.2;
+  chassis.drive_to_pose(24, 0, 180);
+  odom_constants();
+  
+  // Score into long goal
+  chassis.drive_timeout = 800;
+  chassis.drive_to_point(23, 50);
+  ballLockP.set(true);
+  BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
+  chassis.drive_timeout = 500;
+  chassis.drive_distance(-20, 180);
+  chassis.turn_timeout = 850;
+  chassis.turn_to_angle(180);
+  ballLockP.set(false);
+  matchLoadP.set(false);
+  BottomIntake.stop();
+  odom_constants();
+
+  // Reset Pose
+  chassis.set_coordinates(DistanceRight.objectDistance(inches) + 5.5, 42.75, 180);
+
+  // Decore long goal
+  chassis.drive_to_point(12.7, 33);
+  chassis.turn_timeout = 500;
+  chassis.turn_to_angle(172);
+  chassis.drive_min_voltage = 4;
+  chassis.drive_distance(-23);
+  chassis.turn_timeout = 500;
+  chassis.turn_to_angle(180);
+}
+
+void elims_left_4ball() {
+  odom_constants();
+  chassis.set_coordinates(58.75, 20.5, -90);
+
+  // Intake from right match loader
+  matchLoadP.set(true);
+  BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
+  chassis.drive_timeout = 920;
+  chassis.drive_to_point(24, 20);
+  chassis.turn_timeout = 440;
+  chassis.turn_to_angle(180);
+  chassis.drive_min_voltage = 3.5;
+  chassis.drive_max_voltage = 3.5;
+  chassis.drive_timeout = 800;
+  chassis.boomerang_lead = 0.2;
+  chassis.drive_to_pose(24, 0, 180);
+  odom_constants();
+
+  // Score into right long goal
+  chassis.drive_timeout = 700;
+  chassis.drive_to_point(24, 50);
+  ballLockP.set(true);
+  BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
+  chassis.drive_timeout = 500;
+  chassis.drive_distance(-20, 180);
+  chassis.turn_timeout = 700;
+  chassis.turn_to_angle(180);
+  ballLockP.set(false);
+  matchLoadP.set(false);
+  odom_constants();
+
+  // Reset Pose
+  chassis.set_coordinates(DistanceRight.objectDistance(inches) + 5.5, 42.75, 180);
+
+  // Decore long goal
+  chassis.drive_to_point(12.7, 33);
+  BottomIntake.stop();
+  chassis.turn_timeout = 500;
+  chassis.turn_to_angle(172);
+  chassis.drive_min_voltage = 4;
+  chassis.drive_distance(-23);
+  chassis.turn_timeout = 500;
+  chassis.turn_to_angle(140);
+  matchLoadP.set(true);
+}
+
+void prog_skills() {
+  odom_constants();
+  chassis.set_coordinates(58, 23, 0);
+
+  // Intake left center stack
+  wingP.set(true);
+  BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
+  chassis.drive_timeout = 1100;
+  chassis.drive_max_voltage = 7;
+  chassis.boomerang_lead = 0.4;
+  chassis.drive_to_pose(48, 48, -55);
+  matchLoadP.set(true);
+
+  // Score into mid goal
+  chassis.turn_timeout = 470;
+  chassis.turn_to_angle(-135);
+  chassis.drive_timeout = 750;
+  chassis.drive_to_pose(60, 60, -135);
+  angleChangeP.set(true);
+  BottomIntake.spin(forward, 30, vex::velocityUnits::pct);
+  chassis.drive_timeout = 370;
+  chassis.drive_min_voltage = 1;
+  chassis.drive_max_voltage = 1;
+  chassis.drive_distance(-20, -135);
+  BottomIntake.stop();
+  odom_constants();
+
+  // Reset Pose
+  BottomIntake.spin(reverse, 10, vex::velocityUnits::pct);
+  chassis.drive_to_point(17.5, 20);
+  BottomIntake.spin(reverse, 100, vex::velocityUnits::pct);
+  chassis.turn_timeout = 450;
+  chassis.turn_to_angle(180);
+  angleChangeP.set(false);
+  BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
+  chassis.set_coordinates(DistanceRight.objectDistance(inches) + 5.5, 20, 180);
+
+  // Intake from match loader
+  chassis.drive_min_voltage = 3.5;
+  chassis.boomerang_lead = 0.1;
+  chassis.drive_timeout = 1800;
+  chassis.drive_max_voltage = 3.5;
+  chassis.drive_to_pose(23, -5, 180);
+  odom_constants();
+
+  // Go to other side
+  chassis.drive_to_point(10, 42);
+  thread b([] {
+    wait(0.6, seconds);
+    BottomIntake.stop();
+    matchLoadP.set(false);
+  });
+  chassis.drive_to_point(8, 105);
+
+  // Score into blue left long goal
+  chassis.drive_max_voltage = 5;
+  chassis.drive_to_point(21, 112);
+  chassis.turn_to_angle(0);
+  chassis.set_coordinates(DistanceLeft.objectDistance(inches) + 5.5, 112, 0);
+  chassis.drive_timeout = 650;
+  chassis.drive_to_point(22.5, 93);
+  ballLockP.set(true);
+  matchLoadP.set(true);
+  BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
+  chassis.drive_timeout = 1000;
+  chassis.drive_distance(-20, 0);
+  chassis.drive_distance(-20);
+  ballLockP.set(false);
+  BottomIntake.stop();
+  odom_constants();
+
+  // Reset Pose
+  chassis.set_coordinates(DistanceLeft.objectDistance(inches) + 5.5, 101.25, 0);
+
+  // Intake from match loader
+  BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
+  chassis.drive_min_voltage = 3.5;
+  chassis.drive_timeout = 1000;
+  chassis.drive_to_pose(23.5, 132.5, 0);
+  chassis.drive_min_voltage = 4;
+  chassis.drive_max_voltage = 4;
+  chassis.drive_to_pose(23.5, 144, 0);
+  odom_constants();
+
+  // Score into blue left long goal again
+  chassis.drive_timeout = 800;
+  chassis.drive_to_point(23, 93);
+  ballLockP.set(true);
+  matchLoadP.set(false);
+  BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
+  chassis.drive_timeout = 1000;
+  chassis.drive_distance(-20, 0);
+  chassis.drive_distance(-20);
+  BottomIntake.stop();
+  odom_constants();
+
+  // Reset Pose
+  chassis.set_coordinates(DistanceLeft.objectDistance(inches) + 5.5, 101.25, 0);
+  wingP.set(true);
+  odom_constants();
+
+  // Intake red blocks from blue park zone
+  chassis.drive_min_voltage = 3;
+  chassis.drive_max_voltage = 6;
+  chassis.boomerang_lead = 0.5;
+  chassis.drive_timeout = 1450;
+  chassis.drive_to_pose(52, 136, 76);
+  odom_constants();
+  BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
+  ballLockP.set(false);
+  chassis.drive_min_voltage = 9;
+  chassis.drive_max_voltage = 9;
+  chassis.drive_distance(82, 80);
+  odom_constants();
+  chassis.turn_to_angle(180);
+  wait(200, msec);
+
+  // Reset Pose
+  chassis.set_coordinates(144 - DistanceLeft.objectDistance(inches) - 5.5, 144 - DistanceBack.objectDistance(inches) - 5, 180);
+  odom_constants();
+
+  // Score into mid goal
+  BottomIntake.stop();
+  chassis.drive_to_point(77.1, 91);
+  chassis.turn_to_angle(-45);
+  chassis.swing_timeout = 600;
+  chassis.right_swing_to_angle(45);
+  chassis.drive_max_voltage = 3.5;
+  chassis.drive_timeout = 800;
+  chassis.drive_distance(-10, 45);
+  chassis.drive_min_voltage = 3;
+  chassis.drive_max_voltage = 3;
+  chassis.drive_timeout = 250;
+  chassis.drive_distance(3, 45);
+  chassis.set_coordinates(86, 86, 45);
+  odom_constants();
+  angleChangeP.set(true);
+  wait(50, msec);
+  BottomIntake.spin(forward, 20, vex::velocityUnits::pct);
+  wait(3500, msec);
+
+  // Go to long goal while intaking center blocks
+  odom_constants();
+  wingP.set(true);
+  thread t([] {
+    wait(0.2, seconds);
+    BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
+    angleChangeP.set(false);
+  });
+  chassis.drive_max_voltage = 7;
+  chassis.drive_to_point(128, 120);
+  chassis.turn_to_angle(0);
+  wait(100, msec);
+  chassis.set_coordinates(144 - DistanceRight.objectDistance(inches) - 5.5, 120, 0);
+  chassis.drive_timeout = 500;
+  chassis.drive_to_point(120, 93);
+  ballLockP.set(true);
+  matchLoadP.set(true);
+  BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
+  chassis.drive_timeout = 200;
+  chassis.drive_distance(-20, 0);
+  chassis.turn_timeout = 400;
+  chassis.turn_to_angle(0);
+  chassis.drive_timeout = 600;
+  chassis.drive_distance(-20, 0);
+  ballLockP.set(false);
+  odom_constants();
+
+  // Reset Pose
+  chassis.set_coordinates(144 - DistanceRight.objectDistance(inches) - 5.5, 101.25, 0);
+
+  // Intake from match loader
+  BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
+  chassis.drive_timeout = 1150;
+  chassis.drive_min_voltage = 3;
+  chassis.drive_to_pose(121, 131.25, 0);
+  chassis.drive_max_voltage = 3;
+  chassis.drive_to_pose(121, 144, 0);
+  odom_constants();
+
+  // Go to other side
+  chassis.drive_to_point(134, 102);
+  thread c([] {
+    wait(0.6, seconds);
+    BottomIntake.stop();
+    matchLoadP.set(false);
+  });
+  chassis.drive_to_point(135, 39);
+
+  // Score into red right long goal
+  chassis.drive_max_voltage = 5;
+  chassis.drive_to_point(121.5, 32);
+  chassis.turn_to_angle(180);
+  chassis.set_coordinates(144 - DistanceLeft.objectDistance(inches) - 5.5, 32, 180);
+  chassis.drive_timeout = 650;
+  chassis.drive_to_point(121.5, 50);
+  ballLockP.set(true);
+  matchLoadP.set(true);
+  BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
+  chassis.drive_timeout = 650;
+  chassis.drive_distance(-20, 180);
+  chassis.turn_timeout = 750;
+  chassis.turn_to_angle(180);
+  chassis.drive_timeout = 800;
+  chassis.drive_distance(-20, 180);
+  ballLockP.set(false);
+  BottomIntake.stop();
+  odom_constants();
+
+  // Reset Pose
+  chassis.set_coordinates(144 - DistanceLeft.objectDistance(inches) - 5.5, 42.75, 180);
+
+  // Intake from match loader
+  BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
+  chassis.drive_min_voltage = 3.5;
+  chassis.drive_timeout = 1150;
+  chassis.drive_to_pose(120, 11.5, 180);
+  chassis.drive_max_voltage = 3.5;
+  chassis.drive_to_pose(120, 0, 180);
+  odom_constants();
+
+  // Score into blue left long goal again
+  chassis.drive_timeout = 800;
+  chassis.drive_to_point(122.5, 50);
+  ballLockP.set(true);
+  matchLoadP.set(false);
+  BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
+  chassis.drive_timeout = 600;
+  chassis.drive_distance(-20, 180);
+  chassis.turn_timeout = 700;
+  chassis.turn_to_angle(180);
+  chassis.drive_distance(-20, 180);
+  BottomIntake.stop();
+  odom_constants();
+
+  // Reset Pose
+  odom_constants();
+  chassis.set_coordinates(144 - DistanceLeft.objectDistance(inches) - 5.5, 42.75, 180);
+  chassis.turn_timeout = 800;
+  chassis.turn_to_angle(270);
+  ballLockP.set(false);
+  chassis.set_coordinates(144 - DistanceBack.objectDistance(inches) - 5, DistanceLeft.objectDistance(inches) + 5.5, -90);
+
+  // Intake right center stack
+  BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
+  chassis.drive_timeout = 1200;
+  chassis.drive_max_voltage = 5;
+  chassis.drive_to_point(93.2, 47);
+  chassis.turn_to_angle(-45);
+  BottomIntake.stop();
+  chassis.drive_distance(18, -45);
+  intakeLiftP.set(true);
+  BottomIntake.spin(reverse, 40, vex::velocityUnits::pct);
+  wait(2000, msec);
+  odom_constants();
+
+  // Park
+  chassis.swing_max_voltage = 6;
+  chassis.swing_timeout = 600;
+  chassis.right_swing_to_angle(-8);
+  BottomIntake.stop();
+  intakeLiftP.set(false);
+  chassis.drive_to_point(96, 14);
+  chassis.left_swing_to_angle(-95);
+  BottomIntake.spin(reverse, 100, vex::velocityUnits::pct);
+  chassis.drive_min_voltage = 8.5;
+  chassis.drive_max_voltage = 8.5;
+  chassis.drive_distance(43, -93);
 }
