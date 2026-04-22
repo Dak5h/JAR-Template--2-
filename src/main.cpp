@@ -115,7 +115,7 @@ void togglematchLoadP(){
 void togglemidDescoreP(){
   midDescoreP.set(!midDescoreP.value());
 }
-int current_auton_selection = 5;
+int current_auton_selection = 2;
 bool auto_started = false;
 
 /**
@@ -288,7 +288,7 @@ void usercontrol(void) {
     
     Controller1.ButtonX.pressed(toggleWingP);
     Controller1.ButtonA.pressed(togglematchLoadP);
-    Controller1.ButtonUp.pressed(togglemidDescoreP);
+    Controller1.ButtonB.pressed(togglemidDescoreP);
 
     wait(10, msec); // Sleep the task for a short amount of time to
                     // prevent wasted resources.

@@ -164,19 +164,19 @@ void quals_counter_soloawp() {
   matchLoadP.set(true);
   BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
   chassis.drive_timeout = 900;
-  chassis.drive_to_point(120, 20);
+  chassis.drive_to_point(120.5, 20);
   chassis.turn_timeout = 450;
   chassis.turn_to_angle(180);
-  chassis.drive_min_voltage = 3.5;
-  chassis.drive_max_voltage = 3.5;
+  chassis.drive_min_voltage = 6;
+  chassis.drive_max_voltage = 6;
   chassis.drive_timeout = 850;
   chassis.boomerang_lead = 0.2;
-  chassis.drive_to_pose(120, 0, 180);
+  chassis.drive_to_pose(120.5, 0, 180);
   odom_constants();
 
   // Score into right long goal
   chassis.drive_timeout = 700;
-  chassis.drive_to_point(120, 50);
+  chassis.drive_to_point(120.75, 50);
   ballLockP.set(true);
   BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
   chassis.drive_timeout = 400;
@@ -185,6 +185,7 @@ void quals_counter_soloawp() {
   chassis.turn_to_angle(180);
   ballLockP.set(false);
   matchLoadP.set(false);
+  wait(0.1, msec);
   odom_constants();
 
   // Reset Pose
@@ -196,9 +197,9 @@ void quals_counter_soloawp() {
   chassis.drive_timeout = 600;
   chassis.drive_to_point(96, 47);
   chassis.drive_timeout = 1350;
-  chassis.drive_to_point(47, 47);
+  chassis.drive_to_point(45, 51);
   chassis.turn_timeout = 450;
-  chassis.turn_to_angle(-130);
+  chassis.turn_to_angle(-135);
   odom_constants();
 
   // Reset Pose
@@ -211,7 +212,7 @@ void quals_counter_soloawp() {
 
   // Score into long goal
   chassis.drive_timeout = 550;
-  chassis.drive_to_point(24, 50);
+  chassis.drive_to_point(23.7, 50);
   ballLockP.set(true);
   matchLoadP.set(true);
   BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
@@ -226,9 +227,9 @@ void quals_counter_soloawp() {
   chassis.set_coordinates(DistanceRight.objectDistance(inches) + 5.5, 42.75, 180);
 
   // Intake from match loader
-  chassis.drive_min_voltage = 3.5;
-  chassis.drive_to_pose(24, 11, 180);
-  chassis.drive_max_voltage = 3.5;
+  chassis.drive_min_voltage = 4;
+  chassis.drive_to_pose(24, 9.5, 180);
+  chassis.drive_max_voltage = 4;
   chassis.drive_timeout = 120;
   chassis.drive_to_pose(24, 0, 180);
   odom_constants();
@@ -241,7 +242,7 @@ void quals_counter_soloawp() {
   BottomIntake.stop();
   matchLoadP.set(false);
   chassis.drive_timeout = 1250;
-  chassis.drive_to_pose(64, 64, -135);
+  chassis.drive_to_point(66.5, 65);
   angleChangeP.set(true);
   BottomIntake.spin(forward, 50, vex::velocityUnits::pct);
   chassis.drive_timeout = 1200;
@@ -261,22 +262,22 @@ void quals_regular_soloawp() {
   matchLoadP.set(true);
   BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
   chassis.drive_timeout = 920;
-  chassis.drive_to_point(120, 20);
+  chassis.drive_to_point(121, 20);
   chassis.turn_timeout = 450;
   chassis.turn_to_angle(180);
-  chassis.drive_min_voltage = 3.5;
-  chassis.drive_max_voltage = 3.5;
-  chassis.drive_timeout = 870;
+  chassis.drive_min_voltage = 4;
+  chassis.drive_max_voltage = 4;
+  chassis.drive_timeout = 820;
   chassis.boomerang_lead = 0.2;
-  chassis.drive_to_pose(120, 0, 180);
+  chassis.drive_to_pose(121, 0, 180);
   odom_constants();
 
   // Score into right long goal
   chassis.drive_timeout = 700;
-  chassis.drive_to_point(120, 50);
+  chassis.drive_to_point(121, 50);
   ballLockP.set(true);
   BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
-  chassis.drive_timeout = 400;
+  chassis.drive_timeout = 520;
   chassis.drive_distance(-20, 180);
   chassis.turn_timeout = 700;
   chassis.turn_to_angle(180);
@@ -293,7 +294,7 @@ void quals_regular_soloawp() {
   chassis.drive_timeout = 600;
   chassis.drive_to_point(96, 47);
   chassis.drive_timeout = 1600;
-  chassis.drive_to_point(43, 47);
+  chassis.drive_to_point(43, 50);
   chassis.turn_timeout = 450;
   chassis.turn_to_angle(-140);
   odom_constants();
@@ -302,7 +303,7 @@ void quals_regular_soloawp() {
   BottomIntake.stop();
   matchLoadP.set(false);
   chassis.drive_timeout = 675;
-  chassis.drive_to_point(62, 65);
+  chassis.drive_to_point(59, 67);
   angleChangeP.set(true);
   BottomIntake.spin(forward, 40, vex::velocityUnits::pct);
   chassis.drive_timeout = 650;
@@ -317,24 +318,24 @@ void quals_regular_soloawp() {
   // Reset Pose
   matchLoadP.set(true);
   chassis.drive_timeout = 1250;
-  chassis.drive_to_point(24, 20);
+  chassis.drive_to_point(20, 24);
   chassis.turn_timeout = 430;
   chassis.turn_to_angle(180);
   chassis.set_coordinates(DistanceRight.objectDistance(inches) + 5.5, 20, 180);
 
   // Intake from match loader
   BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
-  chassis.drive_min_voltage = 3.5;
+  chassis.drive_min_voltage = 4;
   chassis.boomerang_lead = 0.2;
-  chassis.drive_to_pose(23.5, 11, 180);
-  chassis.drive_max_voltage = 3.5;
-  chassis.drive_timeout = 50;
-  chassis.drive_to_pose(23.5, 0, 180);
+  chassis.drive_to_pose(23.75, 9, 180);
+  chassis.drive_max_voltage = 4;
+  chassis.drive_timeout = 60;
+  chassis.drive_to_pose(23.75, 0, 180);
   odom_constants();
 
   // Score into long goal
   chassis.drive_timeout = 800;
-  chassis.drive_to_point(22.5, 50);
+  chassis.drive_to_point(23.25, 50);
   ballLockP.set(true);
   matchLoadP.set(true);
   BottomIntake.spin(forward, 100, vex::velocityUnits::pct);
