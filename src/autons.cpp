@@ -711,8 +711,8 @@ void prog_skills() {
   BottomIntake.stop();
   chassis.drive_distance(18, -45);
   intakeLiftP.set(true);
-  BottomIntake.spin(reverse, 40, vex::velocityUnits::pct);
-  wait(2000, msec);
+  BottomIntake.spin(reverse, 60, vex::velocityUnits::pct);
+  wait(800, msec);
   odom_constants();
 
   // Park
