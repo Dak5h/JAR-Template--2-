@@ -115,7 +115,7 @@ void togglematchLoadP(){
 void togglemidDescoreP(){
   midDescoreP.set(!midDescoreP.value());
 }
-int current_auton_selection = 2;
+int current_auton_selection = 0;
 bool auto_started = false;
 
 /**
